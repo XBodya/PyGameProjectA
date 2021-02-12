@@ -1114,6 +1114,7 @@ class GameResults:
         else:
             self.animation = 0
 
+
 def load_sound(name):
     fullname = os.path.join(os.path.join("data", "Music"), name)
 
