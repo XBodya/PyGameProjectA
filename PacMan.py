@@ -3,9 +3,10 @@ import os
 import sys
 import datetime
 import random
+from menu import Menu
 from Pacman_board import game_board
 
-game_board_copy = game_board[:]
+game_board_copy = game_board.copy()
 
 
 class Ghost(pygame.sprite.Sprite):
@@ -166,7 +167,8 @@ class Ghost(pygame.sprite.Sprite):
         self.image = self.animations[self.facing][0]
         self.rect = self.image.get_rect()
 
-        self.delta_x, self.delta_y = self.rect.width // 2, self.rect.height // 8
+        self.delta_x, self.delta_y = self.rect.width // 2, \
+                                     self.rect.height // 8
 
         self.current_animation = 0
 
@@ -261,7 +263,8 @@ class Ghost(pygame.sprite.Sprite):
                 directions = self.crossroad(self.index_x, self.index_y)
 
                 if directions[0] and not self.new_crosroad:
-                    if self.index_x != self.old_x and self.index_y != self.old_y:
+                    if self.index_x != self.old_x \
+                            and self.index_y != self.old_y:
                         self.blocked_facing = self.block_facing(self.facing)
 
                     variants = []
@@ -270,24 +273,26 @@ class Ghost(pygame.sprite.Sprite):
                         if direction != self.blocked_facing:
                             if direction == "up":
                                 variants.append([abs(self.current_aim[
-                                                         0] * square - self.x) + abs(
+                                                         0] * square - self.x)
+                                                 + abs(
                                     self.current_aim[1] * square - (
-                                                self.y - 1)), "up"])
+                                            self.y - 1)), "up"])
                             elif direction == "down":
                                 variants.append([abs(self.current_aim[
-                                                         0] * square - self.x) + abs(
+                                                         0] * square - self.x)
+                                                 + abs(
                                     self.current_aim[1] * square - (
-                                                self.y + 1)), "down"])
+                                            self.y + 1)), "down"])
                             elif direction == "left":
                                 variants.append([abs(
                                     self.current_aim[0] * square - (
-                                                self.x - 1)) + abs(
+                                            self.x - 1)) + abs(
                                     self.current_aim[1] * square - self.y),
                                                  "left"])
                             else:
                                 variants.append([abs(
                                     self.current_aim[0] * square - (
-                                                self.x + 1)) + abs(
+                                            self.x + 1)) + abs(
                                     self.current_aim[1] * square - self.y),
                                                  "right"])
 
@@ -306,7 +311,8 @@ class Ghost(pygame.sprite.Sprite):
                     if direction != self.blocked_facing:
                         checked_directions.append(direction)
 
-                if self.index_y * square == self.y and self.index_x * square == self.x:
+                if self.index_y * square == self.y \
+                        and self.index_x * square == self.x:
                     self.facing = random.choice(checked_directions)
 
                     self.blocked_facing = self.block_facing(self.facing)
@@ -393,7 +399,8 @@ class Ghost(pygame.sprite.Sprite):
             if game_board_copy[self.index_y][self.index_x] == 4:
                 self.in_house = True
 
-            if self.in_house and self.index_x == self.house_exit_x and self.index_y == self.house_exit_y:
+            if self.in_house and self.index_x == self.house_exit_x \
+                    and self.index_y == self.house_exit_y:
                 self.current_aim = self.aim_run
                 self.in_house = False
             elif self.in_house and not self.eat:
@@ -518,7 +525,8 @@ class PacMan(pygame.sprite.Sprite):
         self.image = self.animations[self.facing][0]
         self.rect = self.image.get_rect()
 
-        self.delta_x, self.delta_y = self.rect.width // 2, self.rect.height // 8
+        self.delta_x, self.delta_y = self.rect.width // 2, \
+                                     self.rect.height // 8
 
         self.current_animation = 0
         self.sound_number = 1
@@ -546,7 +554,7 @@ class PacMan(pygame.sprite.Sprite):
     def update(self):
         global can_press
 
-        if self.moving:
+        if self.moving and not self.died:
             if self.facing == "up":
                 if not check_wall(self.index_x, self.index_y - 1):
                     if self.y == (self.index_y - 1) * square:
@@ -627,12 +635,18 @@ class PacMan(pygame.sprite.Sprite):
                                    self.y - self.delta_y)
 
     def checker(self):
+        global berry_count
+
         if game_board_copy[self.index_y][self.index_x] == 6:
+            berry_count -= 1
+
             self.game.ghost_mode(ESCAPE_MODE)
             print("Eat super-berry")
-        elif game_board_copy[self.index_y][
-            self.index_x] == 2 and self.game.mode != EATING_GAME_MODE:
+        elif game_board_copy[self.index_y][self.index_x] == 2 \
+                and self.game.mode != EATING_GAME_MODE:
             self.game.score += 10
+
+            berry_count -= 1
 
             if self.sound_number == 1:
                 EAT_BERRY_SOUND1.play(0)
@@ -640,8 +654,8 @@ class PacMan(pygame.sprite.Sprite):
             else:
                 EAT_BERRY_SOUND2.play(0)
                 self.sound_number = 1
-        elif game_board_copy[self.index_y][
-            self.index_x] == 2 and self.game.mode == EATING_GAME_MODE:
+        elif game_board_copy[self.index_y][self.index_x] == 2 \
+                and self.game.mode == EATING_GAME_MODE:
             self.game.score += 10
 
     def change_animation(self):
@@ -650,9 +664,6 @@ class PacMan(pygame.sprite.Sprite):
         elif self.moving:
             self.current_animation = 0
         elif self.died and not self.died_animation_started:
-            print(1)
-            print(self.died, self.died_animation_started)
-            print(self.moving)
             self.current_animation = 0
             self.died_animation_started = True
             DEATH_SOUND.play(0)
@@ -662,14 +673,15 @@ class PacMan(pygame.sprite.Sprite):
         self.update()
 
     def move(self, facing):
-        if self.moving is True:
-            self.next_facing = facing
-        else:
-            self.facing = facing
-            self.moving = True
-            self.delta_x = 0
+        if not self.died:
+            if self.moving is True:
+                self.next_facing = facing
+            else:
+                self.facing = facing
+                self.moving = True
+                self.delta_x = 0
 
-            self.current_animation = 0
+                self.current_animation = 0
 
 
 class Game:
@@ -683,6 +695,8 @@ class Game:
         self.score = 0
 
         self.mode = DEFAULT_GAME_MODE
+
+        self.player1_score = 0
 
         self.starting = True
         self.restarting = False
@@ -707,6 +721,8 @@ class Game:
         self.group = group
 
     def restart(self):
+        global game_board_copy, game_board, board
+
         if self.current_player == 1:
             self.current_player = 2
 
@@ -716,6 +732,10 @@ class Game:
 
             self.ghosts = []
             self.active_ghosts = []
+
+            update_board()
+
+            self.player1_score = self.score
 
             self.score = 0
             self.lives = 1
@@ -737,16 +757,35 @@ class Game:
             pygame.time.set_timer(ACTIVATE_ESCAPE, 0)
             pygame.time.set_timer(ESCAPE_OVER, 0)
         else:
-            print("GAMEOVER")
+            global running, game_result
+
+            if self.player1_score > self.score:
+                print("PLAYER 1 WIN")
+
+                game_result = 1
+            elif self.player1_score < self.score:
+                print("PLAYER 2 WIN")
+
+                game_result = 2
+            else:
+                print("DRAW")
+
+                game_result = 3
+
+            running = False
 
     def update(self):
+        global can_press, berry_count, game_result
+
         render(screen)
 
         self.group.update()
         self.group.draw(screen)
 
         for ghost in self.ghosts:
-            if ghost.index_x == self.pacman.index_x and ghost.index_y == self.pacman.index_y or self.restarting:
+            if ghost.index_x == self.pacman.index_x \
+                    and ghost.index_y == self.pacman.index_y \
+                    or self.restarting:
                 if self.mode == DEFAULT_GAME_MODE or self.restarting:
                     self.lives -= 1
 
@@ -790,6 +829,9 @@ class Game:
         if self.draw_eat_scores:
             screen.blit(self.score_image, self.score_image_rect)
 
+        if berry_count == 0 and self.current_player != 2:
+            game_result = 4
+
     def start_game(self):
         global can_press
 
@@ -826,10 +868,12 @@ class Game:
 
             print(f"{mode} activated {datetime.datetime.now().time()}")
 
-        if mode == RUN_UP_MODE and self.mode != EATING_GAME_MODE and not self.starting:
+        if mode == RUN_UP_MODE and self.mode != EATING_GAME_MODE \
+                and not self.starting:
             pygame.time.set_timer(ACTIVATE_PURSUIT,
                                   self.run_up_timings[self.run_up_count], 1)
-        elif mode == PURSUIT_MODE and self.run_up_count != 3 and self.mode != EATING_GAME_MODE:
+        elif mode == PURSUIT_MODE and self.run_up_count != 3 \
+                and self.mode != EATING_GAME_MODE:
             pygame.time.set_timer(ACTIVATE_RUN_UP, 20000, 1)
         elif mode == ESCAPE_MODE and not self.starting:
             self.mode = EATING_GAME_MODE
@@ -901,6 +945,175 @@ class Game:
         screen.blit(img, img_rect)
 
 
+class GameResults:
+    def __init__(self, game_result):
+        self.game_result = game_result
+
+        self.pacman_x = -130
+
+        self.red_x = 0
+        self.blue_x = -30
+        self.pink_x = -60
+        self.yellow_x = -90
+
+        self.y = 350
+        self.letter_y = 347
+        self.animation = 0
+
+        self.time = pygame.time.Clock()
+
+        self.message = False
+
+        self.pacman_animations = [
+            load_image("tile052.png"), load_image("tile054.png")
+        ]
+
+        self.red_animations = [
+            load_image("tile096.png"), load_image("tile097.png")
+        ]
+        self.blue_animations = [
+            load_image("tile136.png"), load_image("tile137.png")
+        ]
+        self.pink_animations = [
+            load_image("tile128.png"), load_image("tile129.png")
+        ]
+        self.yellow_animations = [
+            load_image("tile144.png"), load_image("tile145.png")
+        ]
+
+        self.running = True
+
+        while self.running:
+            self.draw()
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.running = False
+
+                if event.type == ANIMATION_CHANGE:
+                    self.change_anim()
+
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            pygame.display.flip()
+
+            self.time.tick(FPS)
+
+            self.pacman_x += 3
+
+            self.red_x += 3
+            self.blue_x += 3
+            self.pink_x += 3
+            self.yellow_x += 3
+
+            if self.pacman_x > width:
+                self.message = True
+
+                self.pacman_x = -650
+
+                self.yellow_x = -620
+                self.pink_x = -590
+                self.blue_x = -560
+                self.red_x = -530
+
+                if self.y == 350 or self.y == 320:
+                    self.y = 380
+                elif self.y == 380:
+                    self.y = 320
+
+    def draw(self):
+        screen.fill(BLACK)
+
+        if self.game_result != 3 and self.game_result != 4:
+            letter_x = 170
+
+            for letter in PLAYER:
+                self.check_and_load(letter, letter_x)
+
+                letter_x += 20
+
+            if self.pacman_x >= letter_x or self.message:
+                digit = NUMBERS[self.game_result]
+                digit_rect = digit.get_rect(
+                    bottomleft=(letter_x, self.letter_y)
+                )
+
+                screen.blit(digit, digit_rect)
+
+            letter_x += 40
+
+            for letter in WIN:
+                self.check_and_load(letter, letter_x)
+
+                letter_x += 20
+        elif self.game_result == 3:
+            letter_x = 230
+
+            for letter in DRAW:
+                self.check_and_load(letter, letter_x)
+
+                letter_x += 20
+        else:
+            letter_x = 170
+
+            for letter in PERFECT_WIN:
+                self.check_and_load(letter, letter_x)
+
+                letter_x += 20
+
+        image = self.red_animations[self.animation]
+        image_rect = image.get_rect(bottomleft=(self.red_x, self.y))
+
+        screen.blit(image, image_rect)
+
+        image = self.blue_animations[self.animation]
+        image_rect = image.get_rect(bottomleft=(self.blue_x, self.y))
+
+        screen.blit(image, image_rect)
+
+        image = self.pink_animations[self.animation]
+        image_rect = image.get_rect(bottomleft=(self.pink_x, self.y))
+
+        screen.blit(image, image_rect)
+
+        image = self.yellow_animations[self.animation]
+        image_rect = image.get_rect(bottomleft=(self.yellow_x, self.y))
+
+        screen.blit(image, image_rect)
+
+        image = self.pacman_animations[self.animation]
+        image_rect = image.get_rect(bottomleft=(self.pacman_x, self.y))
+
+        screen.blit(image, image_rect)
+
+        if self.message:
+            letter_x = 95
+
+            for letter in PRESS_SPACE_TO_EXIT:
+                letter_rect = letter.get_rect(
+                    bottomleft=(letter_x, height)
+                )
+
+                letter_x += 20
+
+                screen.blit(letter, letter_rect)
+
+    def check_and_load(self, img, x):
+        letter_rect = img.get_rect(
+            bottomleft=(x, self.letter_y)
+        )
+
+        if self.pacman_x >= x + 20 or self.message:
+            screen.blit(img, letter_rect)
+
+    def change_anim(self):
+        if self.animation == 0:
+            self.animation = 1
+        else:
+            self.animation = 0
+
 def load_sound(name):
     fullname = os.path.join(os.path.join("data", "Music"), name)
 
@@ -950,7 +1163,16 @@ def load_image(name, color_key=None):
     return image
 
 
+def update_board():
+    global game_board_copy, board
+
+    del game_board_copy
+    game_board_copy = board
+
+
 def render(scr):
+    global game_board_copy, game_board
+
     scr.fill(BLACK)
 
     current_tile = 0
@@ -1031,7 +1253,7 @@ if __name__ == '__main__':
 
     square = 20
     width, height = (
-    len(game_board_copy[0]) * square, len(game_board_copy) * square)
+        len(game_board_copy[0]) * square, len(game_board_copy) * square)
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     running = True
@@ -1051,9 +1273,45 @@ if __name__ == '__main__':
         load_text("tile000.png"), load_text("tile025.png"),
         load_text("tile004.png"), load_text("tile018.png")
     ]
+    WIN = [
+        load_text("tile023.png"), load_text("tile008.png"),
+        load_text("tile013.png")
+    ]
+    DRAW = [
+        load_text("tile003.png"), load_text("tile018.png"),
+        load_text("tile000.png"), load_text("tile023.png")
+    ]
+    PRESS_SPACE_TO_EXIT = [
+        load_text("tile016.png"), load_text("tile018.png"),
+        load_text("tile004.png"), load_text("tile019.png"),
+        load_text("tile019.png"), load_text("tile015.png"),
+        load_text("tile019.png"), load_text("tile016.png"),
+        load_text("tile000.png"), load_text("tile002.png"),
+        load_text("tile004.png"), load_text("tile015.png"),
+        load_text("tile020.png"), load_text("tile014.png"),
+        load_text("tile015.png"), load_text("tile004.png"),
+        load_text("tile024.png"), load_text("tile008.png"),
+        load_text("tile020.png")
+    ]
+    PERFECT_WIN = [
+        load_text("tile080.png"), load_text("tile068.png"),
+        load_text("tile082.png"), load_text("tile069.png"),
+        load_text("tile068.png"), load_text("tile066.png"),
+        load_text("tile084.png"), load_text("tile015.png"),
+        load_text("tile087.png"), load_text("tile072.png"),
+        load_text("tile077.png")
+    ]
 
     can_press = True
     game = Game(all_sprites)
+
+    board = game_board[:]
+    berry_count = 4
+
+    for i in board:
+        berry_count += i.count(2)
+
+    game_result = 0
 
     while running:
         for event in pygame.event.get():
@@ -1111,5 +1369,13 @@ if __name__ == '__main__':
             game.draw_player()
 
         pygame.display.flip()
+
+    pygame.mixer.stop()
+
+    if game_result != 0:
+        res = GameResults(game_result)
+
+    menu = Menu()
+    menu.start()
 
     pygame.quit()
