@@ -415,7 +415,7 @@ class SecondMenu:
             self.click_sound.play(0)
             pygame.quit()
             os.system("python PacMan.py")
-            quit()
+            sys.exit()
 
         sn_bottom_right = self.snake_button_rect.bottomright
         sn_top_left = self.snake_button_rect.topleft
@@ -424,7 +424,7 @@ class SecondMenu:
             self.click_sound.play(0)
             pygame.quit()
             os.system("python GameBoard.py")
-            quit()
+            sys.exit()
 
 
 class Settings:
