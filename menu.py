@@ -458,7 +458,8 @@ class Settings:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    return "close"
+                    pygame.quit()
+                    os.system('python main.py')
                 if event.type == self.CHECK_TIME:
                     background = self.check_time()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -491,48 +492,50 @@ class Settings:
                         file = open('data/MenuResoures/settings.txt', 'w')
                         print(koe_music_effect[0], koe_music_effect[1], file=file)
                         file.close()
-
-            screen.blit(background,
-                        (0, 0))
-            font = pygame.font.Font(None, 50)
-            text = font.render("Музыка", True, (255, 0, 0))
-            screen.blit(text, (int(self.size[0] * 0.1), 0))
-            text2 = font.render("Звуковые эффекты", True, (255, 0, 0))
-            screen.blit(text, (int(self.size[0] * 0.1), 0))
-            screen.blit(text2, (int(self.size[0] * 0.1), int(self.size[1] * 0.3)))
-            pygame.draw.rect(screen, (255, 255, 255), (int(self.size[0] * 0.1),
+            try:
+                screen.blit(background,
+                            (0, 0))
+                font = pygame.font.Font(None, 50)
+                text = font.render("Музыка", True, (255, 0, 0))
+                screen.blit(text, (int(self.size[0] * 0.1), 0))
+                text2 = font.render("Звуковые эффекты", True, (255, 0, 0))
+                screen.blit(text, (int(self.size[0] * 0.1), 0))
+                screen.blit(text2, (int(self.size[0] * 0.1), int(self.size[1] * 0.3)))
+                pygame.draw.rect(screen, (255, 255, 255), (int(self.size[0] * 0.1),
+                                                           int(self.size[1] * 0.1),
+                                                           int(self.size[0] * 0.8),
+                                                           int(self.size[1] * 0.2)))
+                pygame.draw.rect(screen, (255, 255, 255), (int(self.size[0] * 0.1),
+                                                           int(self.size[1] * 0.4),
+                                                           int(self.size[0] * 0.8),
+                                                           int(self.size[1] * 0.2)))
+                pygame.draw.rect(screen, (255, 0, 0), (int(self.size[0] * 0.1),
                                                        int(self.size[1] * 0.1),
-                                                       int(self.size[0] * 0.8),
+                                                       int(self.size[0] * 0.8 * (koe_music_effect[0] / 100)),
                                                        int(self.size[1] * 0.2)))
-            pygame.draw.rect(screen, (255, 255, 255), (int(self.size[0] * 0.1),
+                pygame.draw.rect(screen, (255, 0, 0), (int(self.size[0] * 0.1),
                                                        int(self.size[1] * 0.4),
-                                                       int(self.size[0] * 0.8),
+                                                       int(self.size[0] * 0.8 * (koe_music_effect[1] / 100)),
                                                        int(self.size[1] * 0.2)))
-            pygame.draw.rect(screen, (255, 0, 0), (int(self.size[0] * 0.1),
-                                                   int(self.size[1] * 0.1),
-                                                   int(self.size[0] * 0.8 * (koe_music_effect[0] / 100)),
-                                                   int(self.size[1] * 0.2)))
-            pygame.draw.rect(screen, (255, 0, 0), (int(self.size[0] * 0.1),
-                                                   int(self.size[1] * 0.4),
-                                                   int(self.size[0] * 0.8 * (koe_music_effect[1] / 100)),
-                                                   int(self.size[1] * 0.2)))
-            pygame.draw.rect(screen, (0, 0, 0), (int(self.size[0] * 0.1),
-                                                 int(self.size[1] * 0.1),
-                                                 int(self.size[0] * 0.8),
-                                                 int(self.size[1] * 0.2)),
-                             width=5)
-            pygame.draw.rect(screen, (0, 0, 0), (int(self.size[0] * 0.1),
-                                                 int(self.size[1] * 0.4),
-                                                 int(self.size[0] * 0.8),
-                                                 int(self.size[1] * 0.2)),
-                             width=5)
-            pygame.draw.rect(screen, (0, 255, 0), (self.select[self.index].topleft[0],
-                                                   self.select[self.index].topleft[1],
-                                                   self.select[self.index].width,
-                                                   self.select[self.index].height),
-                             width=5)
-            pygame.display.update()
-            clock.tick(self.FPS)
+                pygame.draw.rect(screen, (0, 0, 0), (int(self.size[0] * 0.1),
+                                                     int(self.size[1] * 0.1),
+                                                     int(self.size[0] * 0.8),
+                                                     int(self.size[1] * 0.2)),
+                                 width=5)
+                pygame.draw.rect(screen, (0, 0, 0), (int(self.size[0] * 0.1),
+                                                     int(self.size[1] * 0.4),
+                                                     int(self.size[0] * 0.8),
+                                                     int(self.size[1] * 0.2)),
+                                 width=5)
+                pygame.draw.rect(screen, (0, 255, 0), (self.select[self.index].topleft[0],
+                                                       self.select[self.index].topleft[1],
+                                                       self.select[self.index].width,
+                                                       self.select[self.index].height),
+                                 width=5)
+                pygame.display.update()
+                clock.tick(self.FPS)
+            except Exception as Ex:
+                pass
 
     def load_background(self, name):
         fullname = os.path.join(os.path.join("data", "backgrounds"), name)
