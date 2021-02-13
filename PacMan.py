@@ -9,6 +9,14 @@ from Pacman_board import game_board
 game_board_copy = game_board.copy()
 
 
+def write_coins(coins):
+    file = open('data/MenuResoures/coins.txt', 'r')
+    curr_coins = int(file.readlines()[0])
+    file = open('data/MenuResoures/coins.txt', 'w')
+    print(((coins + curr_coins) * 10) // 7, file=file)
+    file.close()
+
+
 class Ghost(pygame.sprite.Sprite):
     def __init__(self, color, pacman, game):
         super().__init__(all_sprites)
@@ -645,6 +653,7 @@ class PacMan(pygame.sprite.Sprite):
         elif game_board_copy[self.index_y][self.index_x] == 2 \
                 and self.game.mode != EATING_GAME_MODE:
             self.game.score += 10
+            write_coins(1)
 
             berry_count -= 1
 
@@ -657,6 +666,7 @@ class PacMan(pygame.sprite.Sprite):
         elif game_board_copy[self.index_y][self.index_x] == 2 \
                 and self.game.mode == EATING_GAME_MODE:
             self.game.score += 10
+            write_coins(1)
 
     def change_animation(self):
         if self.current_animation == 0 and self.moving:

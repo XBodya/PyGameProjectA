@@ -11,7 +11,6 @@ class Menu:
         self.size = (720, 480)
         self.CHECK_TIME = pygame.USEREVENT + 1
         self.FPS = 60
-
         self.second = SecondMenu()
         self.sett = Settings()
         self.shop = Shop()
@@ -142,16 +141,13 @@ class Menu:
 
     def check_time(self):
         hours = datetime.datetime.now().time().hour
-
         time = "evening"
-
         if hours < 6:
             time = "night"
         elif 6 <= hours < 12:
             time = "morning"
         elif 12 <= hours < 18:
             time = "day"
-
         return self.load_background(f"{time}.png")
 
 
@@ -451,7 +447,6 @@ class Settings:
     def start(self):
         pygame.display.set_caption("Mario Party")
         pygame.time.set_timer(self.CHECK_TIME, 180000)
-
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode(self.size)
         background = self.check_time()
@@ -459,9 +454,7 @@ class Settings:
         file = open('data/MenuResoures/settings.txt', 'r')
         koe_music_effect = list(map(int, file.readlines()[0].split()))
         file.close()
-
         while running:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -543,29 +536,23 @@ class Settings:
 
     def load_background(self, name):
         fullname = os.path.join(os.path.join("data", "backgrounds"), name)
-
         if not os.path.isfile(fullname):
             print(
                 f"Файл {fullname} не найден! Проверьте целостность файлов игры")
             sys.exit()
-
         image = pygame.image.load(fullname).convert()
         image = pygame.transform.scale(image, (720, 480))
-
         return image
 
     def check_time(self):
         hours = datetime.datetime.now().time().hour
-
         time = "evening"
-
         if hours < 6:
             time = "night"
         elif 6 <= hours < 12:
             time = "morning"
         elif 12 <= hours < 18:
             time = "day"
-
         return self.load_background(f"{time}.png")
 
 
@@ -627,35 +614,36 @@ class Shop:
                     if event.key == pygame.K_DOWN:
                         self.index = (self.index + 1) % 3
                         self.click_sound.play(0)
-                if event.type == pygame.K_SPACE:
-                    file = open('data/MenuResoures/coins.txt', 'r')
-                    coins = int(file.readlines()[0])
-                    file.close()
-                    file = open('data/MenuResoures/shop.txt', 'r')
-                    skins = list(map(str, file.readlines()[0].split()))
-                    file.close()
-                    if str(self.index) in skins:
-                        file = open('snakefiles/snake_rgb.txt', 'w')
-                        print(self.index, file=file)
+                    if event.key == pygame.K_RETURN:
+                        file = open('data/MenuResoures/coins.txt', 'r')
+                        coins = int(file.readlines()[0])
                         file.close()
-                    else:
-                        if self.index == 1 and coins >= 100:
-                            file = open('data/MenuResoures/coins.txt', 'w')
-                            print(coins - 100, file=file)
+                        file = open('data/MenuResoures/shop.txt', 'r')
+                        skins = list(map(str, file.readlines()[0].split()))
+                        file.close()
+                        print(skins)
+                        if str(self.index) in skins:
+                            file = open('snakefiles/snake_rgb.txt', 'w')
+                            print(self.index, file=file)
                             file.close()
-                            file = open('data/MenuResoures/shop.txt', 'w')
-                            skins.append(self.index)
-                            print(' '.join(skins), file=file)
-                            file.close()
+                        else:
+                            if self.index == 1 and coins >= 100:
+                                file = open('data/MenuResoures/coins.txt', 'w')
+                                print(coins - 100, file=file)
+                                file.close()
+                                file = open('data/MenuResoures/shop.txt', 'w')
+                                skins.append(self.index)
+                                print(' '.join(list(map(str, skins))), file=file)
+                                file.close()
 
-                        elif self.index == 2 and coins >= 999:
-                            file = open('data/MenuResoures/coins.txt', 'w')
-                            print(coins - 100, file=file)
-                            file.close()
-                            file = open('data/MenuResoures/shop.txt', 'w')
-                            skins.append(self.index)
-                            print(' '.join(skins), file=file)
-                            file.close()
+                            elif self.index == 2 and coins >= 999:
+                                file = open('data/MenuResoures/coins.txt', 'w')
+                                print(coins - 999, file=file)
+                                file.close()
+                                file = open('data/MenuResoures/shop.txt', 'w')
+                                skins.append(self.index)
+                                print(' '.join(list(map(str, skins))), file=file)
+                                file.close()
 
             screen.blit(background,
                         (0, 0))
@@ -753,22 +741,17 @@ class Shop:
             print(
                 f"Файл {fullname} не найден! Проверьте целостность файлов игры")
             sys.exit()
-
         image = pygame.image.load(fullname).convert()
         image = pygame.transform.scale(image, (720, 480))
-
         return image
 
     def check_time(self):
         hours = datetime.datetime.now().time().hour
-
         time = "evening"
-
         if hours < 6:
             time = "night"
         elif 6 <= hours < 12:
             time = "morning"
         elif 12 <= hours < 18:
             time = "day"
-
         return self.load_background(f"{time}.png")
