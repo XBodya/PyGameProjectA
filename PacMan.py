@@ -653,7 +653,6 @@ class PacMan(pygame.sprite.Sprite):
         elif game_board_copy[self.index_y][self.index_x] == 2 \
                 and self.game.mode != EATING_GAME_MODE:
             self.game.score += 10
-            write_coins(1)
 
             berry_count -= 1
 
@@ -666,7 +665,6 @@ class PacMan(pygame.sprite.Sprite):
         elif game_board_copy[self.index_y][self.index_x] == 2 \
                 and self.game.mode == EATING_GAME_MODE:
             self.game.score += 10
-            write_coins(1)
 
     def change_animation(self):
         if self.current_animation == 0 and self.moving:
@@ -1385,7 +1383,7 @@ if __name__ == '__main__':
 
     if game_result != 0:
         res = GameResults(game_result)
-
+    write_coins(game.score + game.player1_score)
     menu = Menu()
     menu.start()
 

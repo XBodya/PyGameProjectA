@@ -123,9 +123,10 @@ def player_one():
                     snake.change_way('UP')
                 elif event.key == pygame.K_DOWN:
                     snake.change_way('DOWN')
-
-        foodPos = food.spawn_food()
-        if snake.move(foodPos) == 1:
+        food_pos = food.spawn_food()
+        while food_pos[0] not in snake.get_body_snake() and food_pos[1] not in snake.get_body_snake():
+            food_pos = food.spawn_food()
+        if snake.move(food_pos) == 1:
             eat_sound.play()
             score += 1
             food.set_food_on_screen(False)
@@ -135,7 +136,7 @@ def player_one():
 
         for pos in snake.get_body_snake():
             pygame.draw.rect(screens, SNAKE_COLOR[index_snake_color], pygame.Rect(pos[0], pos[1], 10, 10))
-        pygame.draw.rect(screens, pygame.Color(225, 0, 0), pygame.Rect(foodPos[0], foodPos[1], 10, 10))
+        pygame.draw.rect(screens, pygame.Color(225, 0, 0), pygame.Rect(food_pos[0], food_pos[1], 10, 10))
 
         if snake.check_hitbox() == 1:
             return score
@@ -180,8 +181,10 @@ def player_two():
                 elif event.key == pygame.K_DOWN:
                     snake.change_way('DOWN')
 
-        foodPos = food.spawn_food()
-        if snake.move(foodPos) == 1:
+        food_pos = food.spawn_food()
+        while food_pos[0] not in snake.get_body_snake() and food_pos[1] not in snake.get_body_snake():
+            food_pos = food.spawn_food()
+        if snake.move(food_pos) == 1:
             eat_sound.play()
             score += 1
             food.set_food_on_screen(False)
@@ -191,7 +194,7 @@ def player_two():
 
         for pos in snake.get_body_snake():
             pygame.draw.rect(screens, SNAKE_COLOR[index_snake_color], pygame.Rect(pos[0], pos[1], 10, 10))
-        pygame.draw.rect(screens, pygame.Color(225, 0, 0), pygame.Rect(foodPos[0], foodPos[1], 10, 10))
+        pygame.draw.rect(screens, pygame.Color(225, 0, 0), pygame.Rect(food_pos[0], food_pos[1], 10, 10))
 
         if snake.check_hitbox() == 1:
             return score

@@ -476,9 +476,7 @@ class Settings:
                         file = open('data/MenuResoures/settings.txt', 'r')
                         koe_music_effect = list(map(int, file.readlines()[0].split()))
                         file.close()
-                        koe_music_effect[self.index] = koe_music_effect[self.index] - 1 \
-                            if koe_music_effect[self.index] - 1 >= 0 else \
-                            koe_music_effect[self.index]
+                        koe_music_effect[self.index] = max(koe_music_effect[self.index] - 1, 0)
                         file = open('data/MenuResoures/settings.txt', 'w')
                         print(koe_music_effect[0], koe_music_effect[1], file=file)
                         file.close()
@@ -486,9 +484,7 @@ class Settings:
                         file = open('data/MenuResoures/settings.txt', 'r')
                         koe_music_effect = list(map(int, file.readlines()[0].split()))
                         file.close()
-                        koe_music_effect[self.index] = koe_music_effect[self.index] + 1 \
-                            if koe_music_effect[self.index] + 1 <= 100 else \
-                            koe_music_effect[self.index]
+                        koe_music_effect[self.index] = min(koe_music_effect[self.index] + 1, 100)
                         file = open('data/MenuResoures/settings.txt', 'w')
                         print(koe_music_effect[0], koe_music_effect[1], file=file)
                         file.close()
