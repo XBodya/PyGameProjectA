@@ -423,7 +423,7 @@ class SecondMenu:
                 sn_top_left[1] <= y <= sn_bottom_right[1]:
             self.click_sound.play(0)
             pygame.quit()
-            os.system("python GameBoard.py")
+            os.system("python Snake.py")
             sys.exit()
 
 

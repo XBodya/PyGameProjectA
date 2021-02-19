@@ -124,8 +124,6 @@ def player_one():
                 elif event.key == pygame.K_DOWN:
                     snake.change_way('DOWN')
         food_pos = food.spawn_food()
-        while food_pos[0] not in snake.get_body_snake() and food_pos[1] not in snake.get_body_snake():
-            food_pos = food.spawn_food()
         if snake.move(food_pos) == 1:
             eat_sound.play()
             score += 1
@@ -182,8 +180,6 @@ def player_two():
                     snake.change_way('DOWN')
 
         food_pos = food.spawn_food()
-        while food_pos[0] not in snake.get_body_snake() and food_pos[1] not in snake.get_body_snake():
-            food_pos = food.spawn_food()
         if snake.move(food_pos) == 1:
             eat_sound.play()
             score += 1
